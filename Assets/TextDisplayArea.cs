@@ -10,6 +10,7 @@ public class TextDisplayArea : PolyText
     Font defaultFont;
     int defaultFontSize=64;
     Color defaultColor;
+	TextAnchor defaultAlignment;
 
     override protected void  Start()
     {
@@ -17,10 +18,11 @@ public class TextDisplayArea : PolyText
         defaultFont=font;
         defaultFontSize=fontSize;
         defaultColor=color;
+		defaultAlignment=alignment;
     }
     
 
-    public void SetText(string txt,Font newFont=null,int newSize=-1,Color? newColor=null,bool setDefault=false)    
+    public void SetText(string txt,Font newFont=null,int newSize=-1,Color? newColor=null,TextAnchor? textAlign=null,bool setDefault=false)    
     {
         prevText="";
         text=txt;
@@ -46,6 +48,17 @@ public class TextDisplayArea : PolyText
         {
             color=defaultColor;            
         }
+		if(textAlign!=null)
+		{
+			alignment=textAlign.Value;
+			if(setDefault)
+			{	
+				defaultAlignment=alignment;
+			}
+		}else
+		{
+			alignment=defaultAlignment;
+		}
         if(newSize!=-1)
         {
             fontSize=newSize;

@@ -76,9 +76,11 @@ public class MessageHandler : MonoBehaviour
         {
             txt=(string)oscM.values[0];
         }
+        txt=txt.Replace("\\n", "\n");
         
         Font font=null;
         Color? color=null;
+        TextAnchor? textAlign = null;
         int fontSize=-1;
         bool setDefault=false;
         
@@ -126,6 +128,17 @@ public class MessageHandler : MonoBehaviour
                             int.TryParse(colorVals[3],out a);
                         }
                         color=new Color(((float)r)/255.0f,((float)g)/255.0f,((float)b)/255.0f,((float)a)/255.0f);
+                    }if(cmd=="align")
+                    {
+                        if (cmdVal.ToLower() == "TL") textAlign = TextAnchor.UpperLeft;
+                        if (cmdVal.ToLower() == "TR") textAlign = TextAnchor.UpperRight;
+                        if (cmdVal.ToLower() == "TC") textAlign = TextAnchor.UpperCenter;
+                        if (cmdVal.ToLower() == "ML") textAlign = TextAnchor.MiddleLeft;
+                        if (cmdVal.ToLower() == "MR") textAlign = TextAnchor.MiddleRight;
+                        if (cmdVal.ToLower() == "MC") textAlign = TextAnchor.MiddleCenter;
+                        if (cmdVal.ToLower() == "BL") textAlign = TextAnchor.LowerLeft;
+                        if (cmdVal.ToLower() == "BR") textAlign = TextAnchor.LowerCenter;
+                        if (cmdVal.ToLower() == "BC") textAlign = TextAnchor.LowerRight;
                     }
                 }
             }
@@ -134,7 +147,7 @@ public class MessageHandler : MonoBehaviour
         GameObject mediaOb=GameObject.Find(targetName+"_Media");
         if(txtOb!=null)
         {
-            txtOb.GetComponent<TextDisplayArea>().SetText(txt,font,fontSize,color,setDefault);
+            txtOb.GetComponent<TextDisplayArea>().SetText(txt,font,fontSize,color, textAlign,setDefault);
         }
         if(mediaOb!=null)
         {

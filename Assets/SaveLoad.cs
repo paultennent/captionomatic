@@ -112,8 +112,8 @@ public class SaveLoad : MonoBehaviour
     }
 
     public void LoadPreset(string name){
+        presetField.text = name;
         SetPresetName(name);
-        presetField.text=Path.GetFileNameWithoutExtension(presetName);
         Load();
     }
 

@@ -314,7 +314,7 @@ public class MediaArea : MonoBehaviour
             maskTexture=texture;
             GetComponent<Renderer>().material.SetTexture("_MaskTex",maskTexture);
             renderCamera.gameObject.active = false;
-            //Destroy(renderCamera.gameObject);
+            Destroy(renderCamera.gameObject);
         }
 
     }
