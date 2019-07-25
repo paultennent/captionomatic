@@ -4580,18 +4580,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51943ad85d7dc5845af21b3ffc5f286e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mediaName: .\media\shadow_flip.mp4
+  mediaName: .\media\shadow_right.mp4
   targetW: 1
   targetH: 1
   matchAspect: 1
   expand: 1
   loop: 0
+  edgeBlur: 0
   axisU: 0
-  flipU: 0
-  axisV: 1
+  flipU: 1
+  axisV: 2
   flipV: 0
-  remapUVs: 0
-  autoMask: 0
+  remapUVs: 1
+  autoMask: 1
   generatedMask: {fileID: 0}
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 2800000, guid: e11287a86eb08d242a8256aac1f8b964, type: 3}
@@ -4676,6 +4677,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 1
   loop: 0
+  edgeBlur: 0
   axisU: 1
   flipU: 1
   axisV: 0
@@ -5332,6 +5334,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 1
   loop: 0
+  edgeBlur: 0
   axisU: 1
   flipU: 1
   axisV: 0
@@ -5660,7 +5663,7 @@ MonoBehaviour:
   text: 
   prevText: 
   alignment: 1
-  font: {fileID: 12800000, guid: ccfbc9dc6dec6574d9ae58fb9c2d648f, type: 3}
+  font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 60
   clipPoly:
   - {x: 0.2, y: 0.63}
@@ -7844,7 +7847,7 @@ MonoBehaviour:
   text: POP
   prevText: POP
   alignment: 4
-  font: {fileID: 12800000, guid: ccfbc9dc6dec6574d9ae58fb9c2d648f, type: 3}
+  font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 60
   clipPoly:
   - {x: 0.99, y: 0.7}
@@ -8047,6 +8050,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 0
   loop: 0
+  edgeBlur: 0
   axisU: 0
   flipU: 0
   axisV: 1
@@ -8720,6 +8724,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 0
   loop: 0
+  edgeBlur: 0
   axisU: 0
   flipU: 0
   axisV: 1
@@ -8886,7 +8891,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh324036
+  m_Name: pb_Mesh17416
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -14426,6 +14431,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 1
   loop: 0
+  edgeBlur: 0
   axisU: 1
   flipU: 1
   axisV: 0
@@ -16062,6 +16068,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 1
   loop: 0
+  edgeBlur: 0
   axisU: 1
   flipU: 1
   axisV: 0
@@ -17218,6 +17225,7 @@ MonoBehaviour:
   matchAspect: 1
   expand: 1
   loop: 0
+  edgeBlur: 0.23
   axisU: 1
   flipU: 0
   axisV: 0

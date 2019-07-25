@@ -15,7 +15,6 @@ public class MediaArea : MonoBehaviour
     public bool loop=false;
     string oldMediaName="XXXXX";
 	
-	public float edgeBlur=0;
 
     public int axisU=0; // x -> U
     public bool flipU=false;
@@ -23,6 +22,8 @@ public class MediaArea : MonoBehaviour
     public bool flipV=false;
     public bool remapUVs=false;
     public bool autoMask=false;
+    [Range(0, 1f)]
+    public float edgeBlur = 0;
 
     public RenderTexture generatedMask;
     public Camera renderCamera;
@@ -112,7 +113,6 @@ public class MediaArea : MonoBehaviour
         if(oldMediaName!=mediaName)
         {
             oldMediaName=mediaName;
-            print(mediaName);
             if(mediaName.EndsWith(".mp4"))
             {
                 VideoPlayer vp=GetComponent<VideoPlayer>();
@@ -189,6 +189,7 @@ public class MediaArea : MonoBehaviour
             minV=Mathf.Min(vertices[i][axisV],minV);
             maxV=Mathf.Max(vertices[i][axisV],maxV);
         }
+        print(minU + ":" + maxU + ":" + minV + ":" + maxV);
         if(minV==maxV )
         {
             print("V axis has no differences, probably wrong one"+":"+gameObject.name);
@@ -225,26 +226,26 @@ public class MediaArea : MonoBehaviour
             scaleGetter=scaleGetter.parent;
         }
 
-        
-        
         if(autoMask)
         {
             
             generatedMask = new RenderTexture(512, 512, 16, RenderTextureFormat.ARGB32);
             renderCamera=Instantiate(Camera.main,GetComponent<Transform>());
             Transform cameraPos=renderCamera.GetComponent<Transform>();
-            Vector3 rot=new Vector3(0,0,0);
-            rot[axisV]=180;
-            rot[otherAxis]=90;
-            Vector3 pos=new Vector3(0,0,0);
-            pos[otherAxis]=0.1f;
-            pos[axisU]=(minU+maxU)*0.5f;
-            pos[axisV]=(minV+maxV)*0.5f;
+            Vector3 lookDir=new Vector3(0,0,0);
+            Vector3 lookUp = new Vector3(0, 0, 0);
+            lookDir[otherAxis] = (flipU==flipV) ? -1 : 1;
+            lookUp[axisV]=flipV?-1:1;
+            cameraPos.localRotation = Quaternion.LookRotation(lookDir, lookUp);
+            Vector3 pos = new Vector3();
+            pos[axisU]= (minU+maxU)*0.5f;
+            pos[axisV]= (minV+maxV)*0.5f;
+            pos -= 0.1f * lookDir;
+            cameraPos.localPosition = pos;
+            //            GetComponent<Renderer>().material.SetTexture("_MainTex",null);
 
-            GetComponent<Renderer>().material.SetTexture("_MainTex",null);
-
-            cameraPos.localRotation=Quaternion.Euler(rot);
-            cameraPos.localPosition=pos;
+            Material oldMat = GetComponent<Renderer>().material;
+            GetComponent<Renderer>().material = new Material(Shader.Find("Unlit/CutoutShader"));
             renderCamera.orthographic=true;
             renderCamera.orthographicSize=totalScale*(maxV-minV)*0.5f;
             renderCamera.aspect=(maxU-minU)/(maxV-minV);
@@ -256,62 +257,73 @@ public class MediaArea : MonoBehaviour
             renderCamera.enabled=false;
             renderCamera.Render();
             gameObject.layer=0;
-            
-			Rect rectReadPicture = new Rect(512, 512, count_x, count_y);
+            GetComponent<Renderer>().material= oldMat;
+
+            Rect rectReadPicture = new Rect(0,0,512,512);
  
 			RenderTexture.active = generatedMask;
-			Texture texture = new Texture2D(count_x, count_y, TextureFormat.RGB24, false);
+			Texture2D texture = new Texture2D(512,512, TextureFormat.RGBA32, false);
 			// Read pixels
 			texture.ReadPixels(rectReadPicture, 0, 0);
 			texture.Apply();
  
 			RenderTexture.active = null; // added to avoid errors 			
-			Color32[] inPixels=texture.GetPixels();
-			Color32[] outPixels=texture.GetPixels();
+			Color32[] inPixels=texture.GetPixels32();
+			Color32[] outPixels=new Color32[inPixels.Length];
+			Color32[] outPixels2=new Color32[inPixels.Length];
 			for(int y=0;y<512;y++)
 			{
 				for(int x=0;x<512;x++)
 				{
-					int xOut=flipU?x,511-x;
-					int yOut=flipV?y,511-y;
+                    int xOut = x ;
+                    int yOut = y ;
+//                    int xOut =flipU?x:511-x;
+//					int yOut=flipV?y:511-y;
 					outPixels[xOut+yOut*512]=inPixels[x+y*512];
 				}
 			}
+			// this code blurs the edges based on how far each pixel is from an edge
+			// n.b. this code is SLOW if edgeBlur is a big number
 			if(edgeBlur>0)
 			{
+				float boundaryWidth=edgeBlur*32.0f;
 				for(int y=0;y<512;y++)
 				{
 					for(int x=0;x<512;x++)
 					{
-						float distance=findPixelDistanceToEdge(outPixels,x,y,edgeBlur);			
-						if(distance<boundaryWidth && distance>0)
+                        outPixels2[x + y * 512] = outPixels[x + y * 512];
+                        float distance =findPixelDistanceToEdge(outPixels,x,y,boundaryWidth);
+						if(distance<boundaryWidth)
 						{
-							float alpha=outPixels[x+y*512].a;
+//                            print(distance + ":" + boundaryWidth);
+							float alpha=outPixels2[x+y*512].a;
 							alpha*=(distance/boundaryWidth);
-							outPixels[x+y*512].a=(byte)a;
+							outPixels2[x+y*512].a=(byte)alpha;
 						}
-						int xOut=flipU?x,511-x;
-						int yOut=flipV?y,511-y;
-						outPixels[xOut+yOut*512]=inPixels[x+y*512];
 					}
 				}
+				texture.SetPixels32(outPixels2);
+				
+			}else
+			{
+				texture.SetPixels32(outPixels);
 			}
-
+            texture.Apply();
 			
-			texture.SetPixels32(outPixels);
 			
             maskTexture=texture;
             GetComponent<Renderer>().material.SetTexture("_MaskTex",maskTexture);
-            Destroy(renderCamera);
+            renderCamera.gameObject.active = false;
+            //Destroy(renderCamera.gameObject);
         }
 
     }
     // find closest edge pixel to this pixel
-	float findPixelDistanceToEdge(outPixels,x,y,boundaryWidth)
+	float findPixelDistanceToEdge(Color32 []outPixels,int x,int  y,float boundaryWidth)
 	{
 		int offsetMax=(int)(boundaryWidth+0.5f);
-		if(outPixels[x+y*512].a==0)return 0f;
-		float minDistanceSq=boundaryWidth*boundaryWidth;
+		if(outPixels[x+y*512].r==0)return 0f;
+		float minDistanceSq=boundaryWidth*boundaryWidth+1f;
 		for(int oX=1;oX<offsetMax;oX+=1)
 		{
 			for(int oY=1;oY<offsetMax;oY+=1)
@@ -319,19 +331,21 @@ public class MediaArea : MonoBehaviour
 				float distanceSq=oX*oX+oY*oY;
 				if(distanceSq<minDistanceSq)
 				{
-					if(x+oX<512 && y+oY<512 && outPixels[x+oX+(y+oY)*512].a==0)minDistanceSq=distanceSq;
-					if(x-oX>=0 && y+oY<512 && outPixels[x-oX+(y+oY)*512].a==0)minDistanceSq=distanceSq;
-					if(x+oX<512 && y-oY>=0 && outPixels[x+oX+(y+oY)*512].a==0)minDistanceSq=distanceSq;
-					if(x-oX>=0 && y-oY>=0 && outPixels[x-oX+(y+oY)*512].a==0)minDistanceSq=distanceSq;
+                    if (x + oX >= 512 || y + oY >= 512 || x - oX < 0 || y - oY < 0)
+                    {
+                        minDistanceSq = distanceSq;
+                    }
+                    else
+                    {
+                        if (outPixels[x + oX + (y + oY) * 512].r == 0) minDistanceSq = distanceSq;
+                        if (outPixels[x - oX + (y + oY) * 512].r == 0) minDistanceSq = distanceSq;
+                        if (outPixels[x + oX + (y - oY) * 512].r == 0) minDistanceSq = distanceSq;
+                        if (outPixels[x - oX + (y - oY) * 512].r == 0) minDistanceSq = distanceSq;
+                    }
 				}
 			}
 		}
-		
-		for(int xOfs=x-1;xOfs>x-offsetMax && xOfs>0;xOfs--)
-		{
-			
-			if(outPixels
-		}
+		return Mathf.Sqrt(minDistanceSq);
 	}
 	
     
