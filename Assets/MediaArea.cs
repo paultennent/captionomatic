@@ -24,18 +24,22 @@ public class MediaArea : MonoBehaviour
     public bool autoMask=false;
     [Range(0, 1f)]
     public float edgeBlur = 0;
+    float lastEdgeBlur = 0;
 
     public RenderTexture generatedMask;
     public Camera renderCamera;
     
-    public Texture maskTexture;
+    public Texture2D maskTexture;
+
+    float [,] edgeDistanceMap;
     
     RenderTexture videoRT;
     
     // Start is called before the first frame update
     void Start()
     {
-        if(remapUVs)
+        edgeDistanceMap = new float[512,512];
+        if (remapUVs)
         {
             ApplyMeshUVs();
         }
@@ -106,9 +110,36 @@ public class MediaArea : MonoBehaviour
         }
     }
 
+    void UpdateEdgeBlur()
+    {
+        Color32[] outPixels = new Color32[512*512];
+        float boundaryWidth = edgeBlur * 32.0f;
+        for (int y = 0; y < 512; y++)
+        {
+            for (int x = 0; x < 512; x++)
+            {
+                outPixels[x + y * 512] = new Color32(255,255,255,255);
+                if (edgeDistanceMap[x, y] < boundaryWidth)
+                {
+                    float alpha = 255;
+                    alpha *= (edgeDistanceMap[x, y] / boundaryWidth);
+                    outPixels[x + y * 512].a = (byte)alpha;
+                }
+            }
+        }
+        maskTexture.SetPixels32(outPixels);
+        maskTexture.Apply();
+//        GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTexture);
+
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (lastEdgeBlur != edgeBlur)
+        {
+            UpdateEdgeBlur();
+        }
         AdjustTextureAspect();
         if(oldMediaName!=mediaName)
         {
@@ -262,13 +293,13 @@ public class MediaArea : MonoBehaviour
             Rect rectReadPicture = new Rect(0,0,512,512);
  
 			RenderTexture.active = generatedMask;
-			Texture2D texture = new Texture2D(512,512, TextureFormat.RGBA32, false);
-			// Read pixels
-			texture.ReadPixels(rectReadPicture, 0, 0);
-			texture.Apply();
+            maskTexture = new Texture2D(512,512, TextureFormat.RGBA32, false);
+            // Read pixels
+            maskTexture.ReadPixels(rectReadPicture, 0, 0);
+            maskTexture.Apply();
  
 			RenderTexture.active = null; // added to avoid errors 			
-			Color32[] inPixels=texture.GetPixels32();
+			Color32[] inPixels=maskTexture.GetPixels32();
 			Color32[] outPixels=new Color32[inPixels.Length];
 			Color32[] outPixels2=new Color32[inPixels.Length];
 			for(int y=0;y<512;y++)
@@ -277,41 +308,44 @@ public class MediaArea : MonoBehaviour
 				{
                     int xOut = x ;
                     int yOut = y ;
-//                    int xOut =flipU?x:511-x;
-//					int yOut=flipV?y:511-y;
 					outPixels[xOut+yOut*512]=inPixels[x+y*512];
 				}
 			}
-			// this code blurs the edges based on how far each pixel is from an edge
-			// n.b. this code is SLOW if edgeBlur is a big number
-			if(edgeBlur>0)
+            // this code blurs the edges based on how far each pixel is from an edge
+            // n.b. this code is SLOW if edgeBlur is a big number
+            // make a distance map up to 32 pixels
+            for (int y = 0; y < 512; y++)
+            {
+                for (int x = 0; x < 512; x++)
+                {
+                    edgeDistanceMap[x, y] = findPixelDistanceToEdge(outPixels, x, y, 31.5f);
+                }
+            }
+            lastEdgeBlur = edgeBlur;
+            if (edgeBlur>0)
 			{
-				float boundaryWidth=edgeBlur*32.0f;
+                float boundaryWidth = edgeBlur * 32.0f;
 				for(int y=0;y<512;y++)
 				{
 					for(int x=0;x<512;x++)
 					{
                         outPixels2[x + y * 512] = outPixels[x + y * 512];
-                        float distance =findPixelDistanceToEdge(outPixels,x,y,boundaryWidth);
-						if(distance<boundaryWidth)
+						if(edgeDistanceMap[x, y] < boundaryWidth)
 						{
-//                            print(distance + ":" + boundaryWidth);
 							float alpha=outPixels2[x+y*512].a;
-							alpha*=(distance/boundaryWidth);
+							alpha*=(edgeDistanceMap[x, y] / boundaryWidth);
 							outPixels2[x+y*512].a=(byte)alpha;
 						}
 					}
 				}
-				texture.SetPixels32(outPixels2);
-				
+				maskTexture.SetPixels32(outPixels2);
 			}else
 			{
-				texture.SetPixels32(outPixels);
+                maskTexture.SetPixels32(outPixels);
 			}
-            texture.Apply();
+            maskTexture.Apply();
 			
 			
-            maskTexture=texture;
             GetComponent<Renderer>().material.SetTexture("_MaskTex",maskTexture);
             renderCamera.gameObject.active = false;
             Destroy(renderCamera.gameObject);

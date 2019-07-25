@@ -162,6 +162,7 @@ public class MessageHandler : MonoBehaviour
         bool stretch=false;
         bool expand=true;
         bool loop=false;
+        float? edgeBlur = null;
         string media="";
         if(oscM.values.Count>0)
         {
@@ -181,6 +182,15 @@ public class MessageHandler : MonoBehaviour
             {
                 loop=true;
             }
+            if (oscM.values[c].ToString().StartsWith("edgeblur:"))
+            {
+                float eb = 0;
+                if(float.TryParse(oscM.values[c].ToString().Split(':')[1], out eb))
+                {
+                    edgeBlur = eb;
+                }
+            }
+
         }
         GameObject txtOb=GameObject.Find(targetName+"_Text");
         GameObject mediaOb=GameObject.Find(targetName+"_Media");
@@ -190,6 +200,10 @@ public class MessageHandler : MonoBehaviour
             mediaOb.GetComponent<MediaArea>().matchAspect=!stretch;
             mediaOb.GetComponent<MediaArea>().expand=expand;
             mediaOb.GetComponent<MediaArea>().loop=loop;
+            if(edgeBlur.HasValue)
+            {
+                mediaOb.GetComponent<MediaArea>().edgeBlur = edgeBlur.Value;
+            }
             mediaOb.GetComponent<MediaArea>().Restart();
         }        
         if(txtOb!=null)
