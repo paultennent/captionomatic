@@ -261,7 +261,9 @@ public class MediaArea : MonoBehaviour
         {
             
             generatedMask = new RenderTexture(512, 512, 16, RenderTextureFormat.ARGB32);
-            renderCamera=Instantiate(Camera.main,GetComponent<Transform>());
+            GameObject obj = new GameObject();
+            obj.transform.parent = transform;
+            renderCamera=obj.AddComponent<Camera>();
             Transform cameraPos=renderCamera.GetComponent<Transform>();
             Vector3 lookDir=new Vector3(0,0,0);
             Vector3 lookUp = new Vector3(0, 0, 0);
@@ -271,7 +273,7 @@ public class MediaArea : MonoBehaviour
             Vector3 pos = new Vector3();
             pos[axisU]= (minU+maxU)*0.5f;
             pos[axisV]= (minV+maxV)*0.5f;
-            pos -= 0.1f * lookDir;
+            pos -= .1f * lookDir;
             cameraPos.localPosition = pos;
             //            GetComponent<Renderer>().material.SetTexture("_MainTex",null);
 
@@ -282,6 +284,7 @@ public class MediaArea : MonoBehaviour
             renderCamera.aspect=(maxU-minU)/(maxV-minV);
             renderCamera.targetTexture=generatedMask;
             renderCamera.cullingMask=1<<11;
+            renderCamera.nearClipPlane = 0.001f;
             renderCamera.clearFlags=CameraClearFlags.SolidColor;
             renderCamera.backgroundColor=Color.clear;
             gameObject.layer=11;

@@ -9292,7 +9292,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh59932
+  m_Name: pb_Mesh32236
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -17926,7 +17926,7 @@ MonoBehaviour:
   axisV: 0
   flipV: 0
   remapUVs: 1
-  autoMask: 1
+  autoMask: 0
   edgeBlur: 0.23
   generatedMask: {fileID: 0}
   renderCamera: {fileID: 0}
