@@ -112,6 +112,11 @@ public class MediaArea : MonoBehaviour
 
     void UpdateEdgeBlur()
     {
+        //Debug.Log(maskTexture.graphicsFormat);
+        //if (maskTexture.format != TextureFormat.RGBA32)
+        //{
+        //    maskTexture = maskTexture.ChangeFormat(TextureFormat.RGBA32);
+        //}
         Color32[] outPixels = new Color32[512*512];
         float boundaryWidth = edgeBlur * 32.0f;
         for (int y = 0; y < 512; y++)
@@ -127,6 +132,7 @@ public class MediaArea : MonoBehaviour
                 }
             }
         }
+        
         maskTexture.SetPixels32(outPixels);
         maskTexture.Apply();
 //        GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTexture);
@@ -389,5 +395,20 @@ public class MediaArea : MonoBehaviour
     public void Restart()
     {
         oldMediaName="";
+    }
+}
+
+public static class TextureHelperClass
+{
+    public static Texture2D ChangeFormat(this Texture2D oldTexture, TextureFormat newFormat)
+    {
+        //Create new empty Texture
+        Texture2D newTex = new Texture2D(2, 2, newFormat, false);
+        //Copy old texture pixels into new one
+        newTex.SetPixels(oldTexture.GetPixels());
+        //Apply
+        newTex.Apply();
+
+        return newTex;
     }
 }
