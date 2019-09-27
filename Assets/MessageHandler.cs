@@ -130,15 +130,15 @@ public class MessageHandler : MonoBehaviour
                         color=new Color(((float)r)/255.0f,((float)g)/255.0f,((float)b)/255.0f,((float)a)/255.0f);
                     }if(cmd=="align")
                     {
-                        if (cmdVal.ToLower() == "TL") textAlign = TextAnchor.UpperLeft;
-                        if (cmdVal.ToLower() == "TR") textAlign = TextAnchor.UpperRight;
-                        if (cmdVal.ToLower() == "TC") textAlign = TextAnchor.UpperCenter;
-                        if (cmdVal.ToLower() == "ML") textAlign = TextAnchor.MiddleLeft;
-                        if (cmdVal.ToLower() == "MR") textAlign = TextAnchor.MiddleRight;
-                        if (cmdVal.ToLower() == "MC") textAlign = TextAnchor.MiddleCenter;
-                        if (cmdVal.ToLower() == "BL") textAlign = TextAnchor.LowerLeft;
-                        if (cmdVal.ToLower() == "BR") textAlign = TextAnchor.LowerCenter;
-                        if (cmdVal.ToLower() == "BC") textAlign = TextAnchor.LowerRight;
+                        if (cmdVal.ToLower() == "tl") textAlign = TextAnchor.UpperLeft;
+                        if (cmdVal.ToLower() == "tr") textAlign = TextAnchor.UpperRight;
+                        if (cmdVal.ToLower() == "tc") textAlign = TextAnchor.UpperCenter;
+                        if (cmdVal.ToLower() == "ml") textAlign = TextAnchor.MiddleLeft;
+                        if (cmdVal.ToLower() == "mr") textAlign = TextAnchor.MiddleRight;
+                        if (cmdVal.ToLower() == "mc") textAlign = TextAnchor.MiddleCenter;
+                        if (cmdVal.ToLower() == "bl") textAlign = TextAnchor.LowerLeft;
+                        if (cmdVal.ToLower() == "br") textAlign = TextAnchor.LowerCenter;
+                        if (cmdVal.ToLower() == "bc") textAlign = TextAnchor.LowerRight;
                     }
                 }
             }

@@ -4983,21 +4983,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.19144288, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: HERE IS SOME TEXT
-  prevText: HERE IS SOME TEXT
-  alignment: 0
+  text: LOOK AT THE BIG CIRCLE
+  prevText: LOOK AT THE BIG CIRCLE
+  alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-  fontSize: 40
+  fontSize: 45
   clipPoly:
-  - {x: 0.07, y: 0.23}
-  - {x: 0.57, y: 0.1}
-  - {x: 0.47, y: 0.84}
-  - {x: 0.1, y: 0.76}
+  - {x: 0.03, y: 0.39}
+  - {x: 0.2, y: 0.12}
+  - {x: 0.8, y: 0.13}
+  - {x: 0.93, y: 0.37}
+  - {x: 0.9, y: 0.72}
+  - {x: 0.8, y: 0.82}
+  - {x: 0.2, y: 0.87}
+  - {x: 0.09, y: 0.73}
   polyMaterial: {fileID: 2100000, guid: 44c9bafdd80d91f4eb4e3b611c506a55, type: 2}
   showPoly: 0
-  forceFlatTopAndBottom: 1
+  forceFlatTopAndBottom: 0
 --- !u!222 &196352428
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5341,6 +5345,8 @@ MonoBehaviour:
 
     up/down/left/right: rotate (fast)
 
+
+    h: hide UI
 
     alt-f4: exit
 
@@ -7023,6 +7029,7 @@ GameObject:
   - component: {fileID: 729792653}
   - component: {fileID: 729792652}
   - component: {fileID: 729792651}
+  - component: {fileID: 729792655}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7117,6 +7124,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &729792655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729792650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4edf119b413024792ffdbc180a5b48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &743094599
 GameObject:
   m_ObjectHideFlags: 0
@@ -14720,7 +14739,9 @@ MonoBehaviour:
 
     Dave
 
-    Edwina'
+    Edwina
+
+    Square'
 --- !u!222 &1294696775
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16442,7 +16463,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1865763510}
   m_Layer: 0
-  m_Name: square
+  m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
