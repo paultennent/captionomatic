@@ -304,8 +304,25 @@ public class MediaArea : MonoBehaviour
         }
     }
 
+    private void AdjustBlackoutTex()
+    {
+        Texture t = GetComponent<Renderer>().material.GetTexture("_MainTex");
+        Texture2D b = new Texture2D(t.width, t.height);
+        for (int y = 0; y < b.height; y++)
+        {
+            for (int x = 0; x < b.width; x++)
+            {
+                Color color = Color.black;
+                b.SetPixel(x, y, color);
+            }
+        }
+        b.Apply();
+        blackout = b;
+    }
+
     public void fadeOut(float fadeTime)
     {
+        AdjustBlackoutTex();
         moveTexToSecondary();
         GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
         AdjustTextureAspect();
