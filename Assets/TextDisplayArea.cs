@@ -40,6 +40,11 @@ public class TextDisplayArea : PolyText
 
     public IEnumerator SetText(string txt,Font newFont=null,int newSize=-1,Color? newColor=null,TextAnchor? textAlign=null,bool setDefault=false, float fadeTime=0f)    
     {
+        if(fadeTime == 0)
+        {
+            fadeTime = 0.1f;
+        }
+
         //fade out first:
         float fadeOutTime = fadeTime / 2f;
 
@@ -109,6 +114,10 @@ public class TextDisplayArea : PolyText
 
 
         //now we'll fade back in
+        //swap font hack?
+        showPoly = true;
+        yield return new WaitForEndOfFrame();
+        showPoly = false;
 
         if (text == "")
         {
