@@ -294,7 +294,7 @@ public class MediaArea : MonoBehaviour
             }
         }
 
-        if (mediaName.Length != 0 && vp == null || vp.isPlaying && vp.isPrepared)
+        if (mediaName.Length != 0 && vp == null || vp.isPlaying && vp.isPrepared || mediaName.Length != 0 && vp2 == null || vp2.isPlaying && vp2.isPrepared)
         {
             GetComponent<Renderer>().enabled = true;
         }
