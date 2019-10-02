@@ -294,7 +294,7 @@ public class MediaArea : MonoBehaviour
             }
         }
 
-        if (mediaName.Length != 0 && vp == null || vp.isPlaying && vp.isPrepared || mediaName.Length != 0 && vp2 == null || vp2.isPlaying && vp2.isPrepared)
+        if (mediaName.Length != 0 && !vp.enabled || vp.isPlaying && vp.isPrepared || mediaName.Length != 0 && !vp2.enabled || vp2.isPlaying && vp2.isPrepared)
         {
             GetComponent<Renderer>().enabled = true;
         }
@@ -308,6 +308,7 @@ public class MediaArea : MonoBehaviour
     {
         moveTexToSecondary();
         GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
+        AdjustTextureAspect();
         StartCoroutine(doFade(GetComponent<Renderer>(), fadeTime));
     }
     

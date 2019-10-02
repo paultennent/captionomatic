@@ -4975,7 +4975,7 @@ RectTransform:
   m_GameObject: {fileID: 196352425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_Children: []
   m_Father: {fileID: 481155464}
   m_RootOrder: 1
@@ -5003,7 +5003,7 @@ MonoBehaviour:
   text: LOOK AT THE BIG CIRCLE
   prevText: LOOK AT THE BIG CIRCLE
   alignment: 4
-  font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  font: {fileID: 12800000, guid: 40db5b44babaa404db997816542556f3, type: 3}
   fontSize: 45
   clipPoly:
   - {x: 0.03, y: 0.39}
@@ -7012,7 +7012,7 @@ MonoBehaviour:
   text: LOOK AT THE BIG CIRCLE
   prevText: LOOK AT THE BIG CIRCLE
   alignment: 4
-  font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  font: {fileID: 12800000, guid: 40db5b44babaa404db997816542556f3, type: 3}
   fontSize: 45
   clipPoly:
   - {x: 0.03, y: 0.39}
@@ -7743,7 +7743,7 @@ MonoBehaviour:
   - {fileID: 12800000, guid: 552faf45ba10184498754338006b2fae, type: 3}
   - {fileID: 12800000, guid: 36ecc5655a3987d40894d16a7068cc64, type: 3}
   - {fileID: 12800000, guid: 74c948d142202034c9861e62f49fe451, type: 3}
-  - {fileID: 12800000, guid: e293550d614f17144935e37f059e4594, type: 3}
+  - {fileID: 12800000, guid: 42a1e99a8f580df45b49a1ff611dd4b8, type: 3}
   - {fileID: 12800000, guid: 67ea7e7f067dd7244a16b2d4c3674e4d, type: 3}
   - {fileID: 12800000, guid: d344a12859de6a34fb29c4f257893b20, type: 3}
   - {fileID: 12800000, guid: 56d29086a9e1e3040afcc6abf162158e, type: 3}

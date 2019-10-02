@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e293550d614f17144935e37f059e4594
+guid: 42a1e99a8f580df45b49a1ff611dd4b8
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: JMH Wolfa
+  fontName: Lemon Brush - Personal Use
   fontNames:
-  - JMH Wolfa
+  - Lemon Brush - Personal Use
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
