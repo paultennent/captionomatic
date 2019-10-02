@@ -35,6 +35,7 @@ public class MessageHandler : MonoBehaviour
         {
             effectMap[pair.addressBase]=pair.trigger;
         }
+        initialKillAll();
     }
 
     // Update is called once per frame
@@ -83,6 +84,7 @@ public class MessageHandler : MonoBehaviour
         TextAnchor? textAlign = null;
         int fontSize=-1;
         bool setDefault=false;
+        float fade = 0f;
         
         for(int c=1;c<oscM.values.Count;c++)
         {
@@ -140,6 +142,10 @@ public class MessageHandler : MonoBehaviour
                         if (cmdVal.ToLower() == "br") textAlign = TextAnchor.LowerCenter;
                         if (cmdVal.ToLower() == "bc") textAlign = TextAnchor.LowerRight;
                     }
+                    if (cmd == "fade")
+                    {
+                        float.TryParse(cmdVal, out fade);
+                    }
                 }
             }
         }
@@ -147,7 +153,7 @@ public class MessageHandler : MonoBehaviour
         GameObject mediaOb=GameObject.Find(targetName+"_Media");
         if(txtOb!=null)
         {
-            txtOb.GetComponent<TextDisplayArea>().SetText(txt,font,fontSize,color, textAlign,setDefault);
+            StartCoroutine(txtOb.GetComponent<TextDisplayArea>().SetText(txt,font,fontSize,color, textAlign,setDefault, fade));
         }
         if(mediaOb!=null)
         {
@@ -164,6 +170,7 @@ public class MessageHandler : MonoBehaviour
         bool loop=false;
         float? edgeBlur = null;
         string media="";
+        float fade = 0f;
         if(oscM.values.Count>0)
         {
             media=(string)oscM.values[0];
@@ -190,6 +197,14 @@ public class MessageHandler : MonoBehaviour
                     edgeBlur = eb;
                 }
             }
+            if (oscM.values[c].ToString().StartsWith("fade:"))
+            {
+                float eb = 0;
+                if (float.TryParse(oscM.values[c].ToString().Split(':')[1], out eb))
+                {
+                    fade = eb;
+                }
+            }
 
         }
         GameObject txtOb=GameObject.Find(targetName+"_Text");
@@ -200,6 +215,7 @@ public class MessageHandler : MonoBehaviour
             mediaOb.GetComponent<MediaArea>().matchAspect=!stretch;
             mediaOb.GetComponent<MediaArea>().expand=expand;
             mediaOb.GetComponent<MediaArea>().loop=loop;
+            mediaOb.GetComponent<MediaArea>().userFadeTime = fade;
             if(edgeBlur.HasValue)
             {
                 mediaOb.GetComponent<MediaArea>().edgeBlur = edgeBlur.Value;
@@ -208,23 +224,36 @@ public class MessageHandler : MonoBehaviour
         }        
         if(txtOb!=null)
         {
-            txtOb.GetComponent<TextDisplayArea>().text="";
+            StartCoroutine(txtOb.GetComponent<TextDisplayArea>().fadeOut(fade));
         }
     }
 
     public void OnKill( string targetName,OscMessage oscM)
     {
-        if(targetName=="All")
+        float fade = 0f; 
+        for (int c = 0; c < oscM.values.Count; c++)
+        {
+            if (oscM.values[c].ToString().StartsWith("fade:"))
+            {
+                float eb = 0;
+                if (float.TryParse(oscM.values[c].ToString().Split(':')[1], out eb))
+                {
+                    fade = eb;
+                }
+            }
+        }
+
+        if (targetName=="All")
         {
             TextDisplayArea[] areas=FindObjectsOfType<TextDisplayArea>();
             foreach(TextDisplayArea area in areas)
             {
-                area.text="";
+                StartCoroutine(area.fadeOut(fade));
             }
             MediaArea[] areas2=FindObjectsOfType<MediaArea>();
             foreach(MediaArea area in areas2)
             {
-                area.mediaName="";
+                area.fadeOut(fade);
             }
             
         }
@@ -232,17 +261,31 @@ public class MessageHandler : MonoBehaviour
         GameObject mediaOb=GameObject.Find(targetName+"_Media");
         if(txtOb!=null)
         {
-            txtOb.GetComponent<TextDisplayArea>().text="";
+            StartCoroutine(txtOb.GetComponent<TextDisplayArea>().fadeOut(fade));
         }
         if(mediaOb!=null)
         {
-            mediaOb.GetComponent<MediaArea>().mediaName="";
+            mediaOb.GetComponent<MediaArea>().fadeOut(fade);
         }
     }
 
 
     public void OnSceneChange( OscMessage oscM)
     {
+    }
+
+    private void initialKillAll()
+    {
+        TextDisplayArea[] areas = FindObjectsOfType<TextDisplayArea>();
+        foreach (TextDisplayArea area in areas)
+        {
+            StartCoroutine(area.fadeOut(0f));
+        }
+        MediaArea[] areas2 = FindObjectsOfType<MediaArea>();
+        foreach (MediaArea area in areas2)
+        {
+            area.fadeOut(0f);
+        }
     }
     
 }

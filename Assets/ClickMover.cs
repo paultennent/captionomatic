@@ -116,6 +116,9 @@ public class ClickMover : MonoBehaviour
     public Transform selectionMarker;
     public Transform mouseMarker;
 
+    public float moveRate = 1f;
+    public float rotateRate = 10f;
+
     Transform selected=null;
     int selectedIndex=-1;
 
@@ -374,6 +377,73 @@ public class ClickMover : MonoBehaviour
             moveTransform.position=new Vector3(0,0,-999);
             moveTransform.rotation=Quaternion.identity;
             
+        }
+
+        //allow for nudging
+        if (Input.GetKey(KeyCode.LeftShift) && selected != null)
+        {
+            Transform moveTransform = selected;
+            if (linkParents[selectedIndex] != null)
+            {
+                moveTransform = linkParents[selectedIndex];
+            }
+
+            //rotate if control is held
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    moveTransform.Rotate(moveTransform.right * Time.deltaTime * rotateRate);
+                }
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    moveTransform.Rotate(-moveTransform.right * Time.deltaTime * rotateRate);
+                }
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    moveTransform.Rotate(moveTransform.up * Time.deltaTime * rotateRate);
+                }
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    moveTransform.Rotate(-moveTransform.up * Time.deltaTime * rotateRate);
+                }
+                if (Input.GetKey(KeyCode.Comma))
+                {
+                    moveTransform.Rotate(-moveTransform.forward * Time.deltaTime * rotateRate);
+                }
+                if (Input.GetKey(KeyCode.Period))
+                {
+                    moveTransform.Rotate(moveTransform.forward * Time.deltaTime * rotateRate);
+                }
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    moveTransform.Translate(moveTransform.up * Time.deltaTime * moveRate);
+                }
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    moveTransform.Translate(-moveTransform.up * Time.deltaTime * moveRate);
+                }
+                if (Input.GetKey(KeyCode.LeftArrow))
+                {
+                    moveTransform.Translate(-moveTransform.right * Time.deltaTime * moveRate);
+                }
+                if (Input.GetKey(KeyCode.RightArrow))
+                {
+                    moveTransform.Translate(moveTransform.right * Time.deltaTime * moveRate);
+                }
+                if (Input.GetKey(KeyCode.Comma))
+                {
+                    moveTransform.Translate(moveTransform.forward * Time.deltaTime * moveRate);
+                }
+                if (Input.GetKey(KeyCode.Period))
+                {
+                    moveTransform.Translate(-moveTransform.forward * Time.deltaTime * moveRate);
+                }
+            }
+
         }
 
 
