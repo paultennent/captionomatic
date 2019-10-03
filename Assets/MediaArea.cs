@@ -50,6 +50,8 @@ public class MediaArea : MonoBehaviour
 
     public bool ignoreEdgeBlur = false;
 
+    public VideoAspectRatio videoAspectRatio = VideoAspectRatio.Stretch;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -83,7 +85,7 @@ public class MediaArea : MonoBehaviour
         vp.isLooping = false;
         vp.targetTexture = renderTex;
         vp.enabled = false;
-        vp.aspectRatio = VideoAspectRatio.Stretch;
+        vp.aspectRatio = videoAspectRatio;
 
         if (vp2 == null)
         {
@@ -93,7 +95,7 @@ public class MediaArea : MonoBehaviour
         vp2.isLooping = false;
         vp2.targetTexture = renderTex2;
         vp2.enabled = false;
-        vp2.aspectRatio = VideoAspectRatio.Stretch;
+        vp2.aspectRatio = videoAspectRatio;
 
         TextureScale.Bilinear(blackout, (int) texSize.x, (int)texSize.y);
         GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);

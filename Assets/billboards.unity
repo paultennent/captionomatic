@@ -4700,6 +4700,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 1
 --- !u!114 &133562354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4806,6 +4807,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 5
 --- !u!23 &145894284
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5573,6 +5575,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 5
 --- !u!23 &354083478
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8557,6 +8560,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 5
 --- !u!64 &1059768652
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9305,6 +9309,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 5
 --- !u!64 &1147009642
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9570,7 +9575,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh37368
+  m_Name: pb_Mesh14674
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -15155,6 +15160,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 5
 --- !u!23 &1411066473
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17159,6 +17165,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 0
+  videoAspectRatio: 5
 --- !u!23 &1979611624
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -18396,6 +18403,7 @@ MonoBehaviour:
   userFadeTime: 0
   texSize: {x: 1920, y: 1080}
   ignoreEdgeBlur: 1
+  videoAspectRatio: 5
 --- !u!23 &7611197132660613718
 MeshRenderer:
   m_ObjectHideFlags: 0
