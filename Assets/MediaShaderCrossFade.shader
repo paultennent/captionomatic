@@ -68,7 +68,7 @@ SubShader {
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.texcoord);
-			fixed4 col2 = tex2D(_SecondaryTex, i.texcoord);
+				fixed4 col2 = tex2D(_SecondaryTex, i.texcoord);
 
                 fixed4 mask= tex2D(_MaskTex,i.texcoord2);
                 if (i.texcoord.x <= 0.0f || i.texcoord.y <= 0.0f || i.texcoord.x >= 1.0f || i.texcoord.y >= 1.0f)

@@ -37,7 +37,7 @@ public class MediaArea : MonoBehaviour
 
     public float userFadeTime = 0f;
 
-    private Texture blackout;
+    private Texture2D blackout;
     private RenderTexture renderTex;
     private RenderTexture renderTex2;
 
@@ -46,9 +46,17 @@ public class MediaArea : MonoBehaviour
     Transform videoPlayerChild;
     Transform videoPlayerChild2;
 
+    public Vector2 texSize = new Vector2(1920, 1080);
+
+    public bool ignoreEdgeBlur = false;
+
     // Start is called before the first frame update
     void Start()
     {
+
+        float scalar = 2048f/targetW;
+        texSize = new Vector2(2048f, targetH * scalar);
+
         edgeDistanceMap = new float[512,512];
         if (remapUVs)
         {
@@ -56,13 +64,14 @@ public class MediaArea : MonoBehaviour
         }
 
 
-        blackout = GetComponent<Renderer>().material.GetTexture("_MainTex");
+        blackout = Texture2D.blackTexture;// = (Texture2D) GetComponent<Renderer>().material.GetTexture("_MainTex");
+
         GetComponent<Renderer>().material.SetTexture("_MaskTex",maskTexture);
 
-        renderTex = new RenderTexture(1920, 1080, 0);
+        renderTex = new RenderTexture((int) texSize.x, (int) texSize.y, 0);
         videoPlayerChild = new GameObject("VideoPlayer").transform;
         videoPlayerChild.parent = transform;
-        renderTex2 = new RenderTexture(1920, 1080, 0);
+        renderTex2 = new RenderTexture((int)texSize.x, (int)texSize.y, 0);
         videoPlayerChild2 = new GameObject("VideoPlayer2").transform;
         videoPlayerChild2.parent = transform;
 
@@ -74,6 +83,7 @@ public class MediaArea : MonoBehaviour
         vp.isLooping = false;
         vp.targetTexture = renderTex;
         vp.enabled = false;
+        vp.aspectRatio = VideoAspectRatio.Stretch;
 
         if (vp2 == null)
         {
@@ -83,12 +93,17 @@ public class MediaArea : MonoBehaviour
         vp2.isLooping = false;
         vp2.targetTexture = renderTex2;
         vp2.enabled = false;
+        vp2.aspectRatio = VideoAspectRatio.Stretch;
+
+        TextureScale.Bilinear(blackout, (int) texSize.x, (int)texSize.y);
+        GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
+
 
     }
 
     void AdjustTextureAspect()
     {
-        if (vp!=null)
+        if (vp != null && !vp.enabled)
         {
             if(vp.targetTexture==null && vp.width>0 && vp.height>0)
             {
@@ -102,10 +117,10 @@ public class MediaArea : MonoBehaviour
         {
             return;
         }
-        float tw=GetComponent<Renderer>().material.mainTexture.width;
-        float th=GetComponent<Renderer>().material.mainTexture.height;
+        float tw=GetComponent<Renderer>().material.GetTexture("_MainTex").width;
+        float th=GetComponent<Renderer>().material.GetTexture("_MainTex").height;
 
-        if (vp2 != null)
+        if (vp != null && !vp2.enabled)
         {
             if (vp2.targetTexture == null && vp2.width > 0 && vp2.height > 0)
             {
@@ -119,8 +134,8 @@ public class MediaArea : MonoBehaviour
         {
             return;
         }
-        float tw2 = GetComponent<Renderer>().material.mainTexture.width;
-        float th2 = GetComponent<Renderer>().material.mainTexture.height;
+        float tw2 = GetComponent<Renderer>().material.GetTexture("_SecondaryTex").width;
+        float th2 = GetComponent<Renderer>().material.GetTexture("_SecondaryTex").height;
 
         if (matchAspect==false)
         {
@@ -134,6 +149,7 @@ public class MediaArea : MonoBehaviour
 
             if(expand)
             {
+                Debug.Log("doing expand");
                 if(tw/th > targetW/targetH)
                 {
                     float sx=(targetW/targetH)/(tw/th);
@@ -151,24 +167,25 @@ public class MediaArea : MonoBehaviour
 
                 if (tw2 / th2 > targetW / targetH)
                 {
-                    float sx = (targetW / targetH) / (tw2 / th2);
+                    float sx2 = (targetW / targetH) / (tw2 / th2);
                     // height too big - clip left and right
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(sx, 1.0f));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0.5f * (1f - sx), 0f));
+                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(sx2, 1.0f));
+                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0.5f * (1f - sx2), 0f));
 
                 }
                 else
                 {
                     // width too big - clip top and bottom and scale vertically
-                    float sy = (tw2 / th2) / (targetW / targetH);
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1.0f, sy));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0.5f * (1f - sy)));
+                    float sy2 = (tw2 / th2) / (targetW / targetH);
+                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1.0f, sy2));
+                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0.5f * (1f - sy2)));
                 }
 
 
             }
             else
             {
+                Debug.Log("doing stretch");
                 if(tw/th > targetW/targetH)
                 {
                     // width too big - clip top and bottom and scale vertically
@@ -187,17 +204,17 @@ public class MediaArea : MonoBehaviour
                 if (tw2 / th2 > targetW / targetH)
                 {
                     // width too big - clip top and bottom and scale vertically
-                    float sy = (tw2 / th2) / (targetW / targetH);
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1.0f, sy));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0.5f * (1f - sy)));
+                    float sy2 = (tw2 / th2) / (targetW / targetH);
+                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1.0f, sy2));
+                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0.5f * (1f - sy2)));
 
                 }
                 else
                 {
-                    float sx = (targetW / targetH) / (tw2 / th2);
+                    float sx2 = (targetW / targetH) / (tw2 / th2);
                     // height too big - clip left and right
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(sx, 1.0f));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0.5f * (1f - sx), 0f));
+                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(sx2, 1.0f));
+                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0.5f * (1f - sx2), 0f));
                 }
             }
         }
@@ -205,28 +222,32 @@ public class MediaArea : MonoBehaviour
 
     void UpdateEdgeBlur()
     {
-        //Debug.Log(maskTexture.graphicsFormat);
+        if (ignoreEdgeBlur)
+        {
+            return;
+        }
         //if (maskTexture.format != TextureFormat.RGBA32)
         //{
         //    maskTexture = maskTexture.ChangeFormat(TextureFormat.RGBA32);
         //}
-        Color32[] outPixels = new Color32[512*512];
+        Color32[] outPixels = new Color32[maskTexture.width*maskTexture.height];
         float boundaryWidth = edgeBlur * 32.0f;
-        for (int y = 0; y < 512; y++)
+        for (int y = 0; y < maskTexture.height; y++)
         {
-            for (int x = 0; x < 512; x++)
+            for (int x = 0; x < maskTexture.width; x++)
             {
-                outPixels[x + y * 512] = new Color32(255,255,255,255);
+                outPixels[x + y * maskTexture.height] = new Color32(255,255,255,255);
                 if (edgeDistanceMap[x, y] < boundaryWidth)
                 {
                     float alpha = 255;
                     alpha *= (edgeDistanceMap[x, y] / boundaryWidth);
-                    outPixels[x + y * 512].a = (byte)alpha;
+                    outPixels[x + y * maskTexture.height].a = (byte)alpha;
                 }
             }
         }
-        
-        //maskTexture.SetPixels32(outPixels); -- removed to get rid of errors
+        print(gameObject.name);
+        Debug.Log(maskTexture.graphicsFormat);
+        maskTexture.SetPixels32(outPixels); // removed to get rid of errors
         maskTexture.Apply();
 //        GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTexture);
 
@@ -245,7 +266,7 @@ public class MediaArea : MonoBehaviour
         {
             UpdateEdgeBlur();
         }
-        AdjustTextureAspect();
+        //AdjustTextureAspect();
         if (oldMediaName != mediaName)
         {
             oldMediaName = mediaName;
@@ -281,14 +302,17 @@ public class MediaArea : MonoBehaviour
                 texture.wrapMode = TextureWrapMode.Clamp;
                 texture.LoadImage(bytes);
 
+                TextureScale.Bilinear(texture, (int) texSize.x, (int) texSize.y);
+
                 // our aspect ratio                
 
                 Renderer renderer = GetComponent<Renderer>();
 
                 moveTexToSecondary();
                 renderer.material.SetTexture("_MainTex", texture);
+                //AdjustTextureAspect();
                 StartCoroutine(doFade(renderer, userFadeTime));
-
+                
                 //renderer.material.mainTexture = texture;
 
             }
@@ -322,10 +346,9 @@ public class MediaArea : MonoBehaviour
 
     public void fadeOut(float fadeTime)
     {
-        AdjustBlackoutTex();
+        //AdjustBlackoutTex();
         moveTexToSecondary();
         GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
-        AdjustTextureAspect();
         StartCoroutine(doFade(GetComponent<Renderer>(), fadeTime));
     }
     
@@ -385,14 +408,14 @@ public class MediaArea : MonoBehaviour
             minV=Mathf.Min(vertices[i][axisV],minV);
             maxV=Mathf.Max(vertices[i][axisV],maxV);
         }
-        print(minU + ":" + maxU + ":" + minV + ":" + maxV);
+        //print(minU + ":" + maxU + ":" + minV + ":" + maxV);
         if(minV==maxV )
         {
-            print("V axis has no differences, probably wrong one"+":"+gameObject.name);
+            //print("V axis has no differences, probably wrong one"+":"+gameObject.name);
         }
         if(minU==maxU)
         {
-            print("U axis has no differences, probably wrong one"+":"+gameObject.name);
+            //print("U axis has no differences, probably wrong one"+":"+gameObject.name);
         }
         float vMult=1/(maxV-minV);
         float uMult=1/(maxU-minU);

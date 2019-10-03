@@ -35,7 +35,7 @@ public class MessageHandler : MonoBehaviour
         {
             effectMap[pair.addressBase]=pair.trigger;
         }
-        initialKillAll();
+        //initialKillAll();
     }
 
     // Update is called once per frame

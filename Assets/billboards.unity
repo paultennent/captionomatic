@@ -4698,6 +4698,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 2800000, guid: e11287a86eb08d242a8256aac1f8b964, type: 3}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!114 &133562354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4802,6 +4804,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 0}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!23 &145894284
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5000,8 +5004,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 1, g: 0.19144288, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: LOOK AT THE BIG CIRCLE
-  prevText: LOOK AT THE BIG CIRCLE
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 12800000, guid: 40db5b44babaa404db997816542556f3, type: 3}
   fontSize: 45
@@ -5567,6 +5571,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 0}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!23 &354083478
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5725,8 +5731,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Bob2
-  prevText: Bob2
+  text: 
+  prevText: 
   alignment: 7
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 35
@@ -7009,8 +7015,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 1, g: 0.19144288, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: LOOK AT THE BIG CIRCLE
-  prevText: LOOK AT THE BIG CIRCLE
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 12800000, guid: 40db5b44babaa404db997816542556f3, type: 3}
   fontSize: 45
@@ -7529,8 +7535,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Alex 3
-  prevText: Alex 3
+  text: 
+  prevText: 
   alignment: 2
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 45
@@ -8333,8 +8339,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 1, b: 0.018793583, a: 1}
   m_RaycastTarget: 0
-  text: POP
-  prevText: POP
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 60
@@ -8406,8 +8412,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Bob1
-  prevText: Bob1
+  text: 
+  prevText: 
   alignment: 3
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 40
@@ -8549,6 +8555,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 0}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!64 &1059768652
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8881,8 +8889,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Alex 2
-  prevText: Alex 2
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 35
@@ -9044,8 +9052,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 1, b: 0.018793583, a: 1}
   m_RaycastTarget: 0
-  text: Some text to sit in the top right polygon on the projection map
-  prevText: Some text to sit in the top right polygon on the projection map
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 45
@@ -9295,6 +9303,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 0}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!64 &1147009642
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -14522,8 +14532,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 1, b: 0.018793583, a: 1}
   m_RaycastTarget: 0
-  text: BANG
-  prevText: BANG
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 45
@@ -15143,6 +15153,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 0}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!23 &1411066473
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15752,8 +15764,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Alex 1
-  prevText: Alex 1
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 40
@@ -15825,8 +15837,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Bob4
-  prevText: Bob4
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 45
@@ -17145,6 +17157,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 0}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 0
 --- !u!23 &1979611624
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17273,8 +17287,8 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 6d7ad1fe062c6904185ebdf47993e9da, type: 2}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
-  text: Bob3
-  prevText: Bob3
+  text: 
+  prevText: 
   alignment: 4
   font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   fontSize: 45
@@ -18380,6 +18394,8 @@ MonoBehaviour:
   renderCamera: {fileID: 0}
   maskTexture: {fileID: 2800000, guid: 9d8d547355018b044b29dd5622051977, type: 3}
   userFadeTime: 0
+  texSize: {x: 1920, y: 1080}
+  ignoreEdgeBlur: 1
 --- !u!23 &7611197132660613718
 MeshRenderer:
   m_ObjectHideFlags: 0

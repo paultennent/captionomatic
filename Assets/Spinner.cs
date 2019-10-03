@@ -19,7 +19,7 @@ public class Spinner : MonoBehaviour
     {
         startRot = transform.rotation;
         startPos = transform.position;
-        hub = transform.GetComponent<Renderer>().bounds.center;
+        hub = GetComponent<Renderer>().bounds.center;
     }
 
     // Update is called once per frame
@@ -76,6 +76,8 @@ public class Spinner : MonoBehaviour
             gameObject.transform.RotateAround(point, axis, angleDelta * ourTimeDelta);
             yield return null;
         }
+        transform.rotation = startRot;
+        transform.position = startPos;
     }
 
 
