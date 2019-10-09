@@ -52,6 +52,9 @@ public class MediaArea : MonoBehaviour
 
     public VideoAspectRatio videoAspectRatio = VideoAspectRatio.Stretch;
 
+    private Material[] mats;
+    private int curMatIndex = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -97,14 +100,24 @@ public class MediaArea : MonoBehaviour
         vp2.enabled = false;
         vp2.aspectRatio = videoAspectRatio;
 
-        TextureScale.Bilinear(blackout, (int) texSize.x, (int)texSize.y);
-        GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
+        //TextureScale.Bilinear(blackout, (int) texSize.x, (int)texSize.y);
+       
 
+       
+        mats = new Material[2];
+        mats[0] = GetComponent<Renderer>().material;
+        mats[0].SetTexture("_MainTex", blackout);
+        mats[1] = new Material(mats[0]);
+        GetComponent<Renderer>().materials = mats;
+        mats[0].SetFloat("_Alpha", 1f);
+        mats[1].SetFloat("_Alpha", 0f);
+        GetComponent<Renderer>().materials = mats;
 
     }
 
-    void AdjustTextureAspect()
+    void AdjustTextureAspect(int texNum)
     {
+        mats = GetComponent<Renderer>().materials;
         if (vp != null && !vp.enabled)
         {
             if(vp.targetTexture==null && vp.width>0 && vp.height>0)
@@ -112,114 +125,62 @@ public class MediaArea : MonoBehaviour
                 if(renderTex!=null) renderTex.Release();
                 renderTex=new RenderTexture((int)vp.width,(int)vp.height,0,RenderTextureFormat.ARGB32);
                 vp.targetTexture=renderTex;
-                GetComponent<Renderer>().material.mainTexture=vp.targetTexture;
+                mats[texNum].mainTexture=vp.targetTexture;
             }
         }
-        if(GetComponent<Renderer>().material.mainTexture==null)
+        if (mats[texNum].mainTexture==null)
         {
             return;
         }
-        float tw=GetComponent<Renderer>().material.GetTexture("_MainTex").width;
-        float th=GetComponent<Renderer>().material.GetTexture("_MainTex").height;
-
-        if (vp != null && !vp2.enabled)
-        {
-            if (vp2.targetTexture == null && vp2.width > 0 && vp2.height > 0)
-            {
-                if (renderTex2 != null) renderTex2.Release();
-                renderTex2 = new RenderTexture((int)vp2.width, (int)vp2.height, 0, RenderTextureFormat.ARGB32);
-                vp2.targetTexture = renderTex2;
-                GetComponent<Renderer>().material.mainTexture = vp2.targetTexture;
-            }
-        }
-        if (GetComponent<Renderer>().material.mainTexture == null)
-        {
-            return;
-        }
-        float tw2 = GetComponent<Renderer>().material.GetTexture("_SecondaryTex").width;
-        float th2 = GetComponent<Renderer>().material.GetTexture("_SecondaryTex").height;
+        float tw = mats[texNum].GetTexture("_MainTex").width;
+        float th = mats[texNum].GetTexture("_MainTex").height;
 
         if (matchAspect==false)
         {
-            GetComponent<Renderer>().material.SetTextureScale("_MainTex",new Vector2(1f,1.0f));
-            GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1f, 1.0f));
-            GetComponent<Renderer>().material.SetTextureOffset("_MainTex",new Vector2(0,0));
-            GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0));
+            mats[texNum].SetTextureScale("_MainTex",new Vector2(1f,1.0f));
+            mats[texNum].SetTextureOffset("_MainTex",new Vector2(0,0));
         }
         else
         {
 
             if(expand)
             {
-                Debug.Log("doing expand");
                 if(tw/th > targetW/targetH)
                 {
                     float sx=(targetW/targetH)/(tw/th);
                     // height too big - clip left and right
-                    GetComponent<Renderer>().material.SetTextureScale("_MainTex",new Vector2(sx,1.0f));
-                    GetComponent<Renderer>().material.SetTextureOffset("_MainTex",new Vector2(0.5f*(1f-sx),0f));
+                    mats[texNum].SetTextureScale("_MainTex",new Vector2(sx,1.0f));
+                    mats[texNum].SetTextureOffset("_MainTex",new Vector2(0.5f*(1f-sx),0f));
                     
                 }else
                 {
                     // width too big - clip top and bottom and scale vertically
                     float sy=(tw/th)/(targetW/targetH);
-                    GetComponent<Renderer>().material.SetTextureScale("_MainTex",new Vector2(1.0f,sy));
-                    GetComponent<Renderer>().material.SetTextureOffset("_MainTex",new Vector2(0,0.5f*(1f-sy)));
+                    mats[texNum].SetTextureScale("_MainTex",new Vector2(1.0f,sy));
+                    mats[texNum].SetTextureOffset("_MainTex",new Vector2(0,0.5f*(1f-sy)));
                 }
-
-                if (tw2 / th2 > targetW / targetH)
-                {
-                    float sx2 = (targetW / targetH) / (tw2 / th2);
-                    // height too big - clip left and right
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(sx2, 1.0f));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0.5f * (1f - sx2), 0f));
-
-                }
-                else
-                {
-                    // width too big - clip top and bottom and scale vertically
-                    float sy2 = (tw2 / th2) / (targetW / targetH);
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1.0f, sy2));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0.5f * (1f - sy2)));
-                }
-
 
             }
             else
             {
-                Debug.Log("doing stretch");
                 if(tw/th > targetW/targetH)
                 {
                     // width too big - clip top and bottom and scale vertically
                     float sy=(tw/th)/(targetW/targetH);
-                    GetComponent<Renderer>().material.SetTextureScale("_MainTex",new Vector2(1.0f,sy));
-                    GetComponent<Renderer>().material.SetTextureOffset("_MainTex",new Vector2(0,0.5f*(1f-sy)));
+                    mats[texNum].SetTextureScale("_MainTex",new Vector2(1.0f,sy));
+                    mats[texNum].SetTextureOffset("_MainTex",new Vector2(0,0.5f*(1f-sy)));
                     
                 }else
                 {
                     float sx=(targetW/targetH)/(tw/th);
                     // height too big - clip left and right
-                    GetComponent<Renderer>().material.SetTextureScale("_MainTex",new Vector2(sx,1.0f));
-                    GetComponent<Renderer>().material.SetTextureOffset("_MainTex",new Vector2(0.5f*(1f-sx),0f));
+                    mats[texNum].SetTextureScale("_MainTex",new Vector2(sx,1.0f));
+                    mats[texNum].SetTextureOffset("_MainTex",new Vector2(0.5f*(1f-sx),0f));
                 }
 
-                if (tw2 / th2 > targetW / targetH)
-                {
-                    // width too big - clip top and bottom and scale vertically
-                    float sy2 = (tw2 / th2) / (targetW / targetH);
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(1.0f, sy2));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0, 0.5f * (1f - sy2)));
-
-                }
-                else
-                {
-                    float sx2 = (targetW / targetH) / (tw2 / th2);
-                    // height too big - clip left and right
-                    GetComponent<Renderer>().material.SetTextureScale("_SecondaryTex", new Vector2(sx2, 1.0f));
-                    GetComponent<Renderer>().material.SetTextureOffset("_SecondaryTex", new Vector2(0.5f * (1f - sx2), 0f));
-                }
             }
         }
+        GetComponent<Renderer>().materials = mats;
     }
 
     void UpdateEdgeBlur()
@@ -249,21 +210,22 @@ public class MediaArea : MonoBehaviour
         }
         print(gameObject.name);
         Debug.Log(maskTexture.graphicsFormat);
-        maskTexture.SetPixels32(outPixels); // removed to get rid of errors
+        maskTexture.SetPixels32(outPixels); 
         maskTexture.Apply();
 //        GetComponent<Renderer>().material.SetTexture("_MaskTex", maskTexture);
 
     }
 
-    public void moveTexToSecondary()
-    {
-        GetComponent<Renderer>().material.SetTexture("_SecondaryTex", GetComponent<Renderer>().material.GetTexture("_MainTex"));
-        GetComponent<Renderer>().material.SetFloat("_Blend", 0f);
-    }
+    //public void moveTexToSecondary()
+    //{
+    //    GetComponent<Renderer>().material.SetTexture("_SecondaryTex", GetComponent<Renderer>().material.GetTexture("_MainTex"));
+    //    GetComponent<Renderer>().material.SetFloat("_Blend", 0f);
+    //}
 
     // Update is called once per frame
     void Update()
     {
+        mats = GetComponent<Renderer>().materials;
         if (lastEdgeBlur != edgeBlur)
         {
             UpdateEdgeBlur();
@@ -274,26 +236,48 @@ public class MediaArea : MonoBehaviour
             oldMediaName = mediaName;
             if (mediaName.EndsWith(".mp4"))
             {
-                moveTexToSecondary();
+                //moveTexToSecondary();
                 if (!vp.enabled)
                 {
                     vp.enabled = true;
                     vp.isLooping = loop;
                     vp.url = Path.GetFullPath(mediaName);
-                    vp.Stop();
+                    
+                        vp.Stop();
+                    
                     vp.Play();
-                    GetComponent<Renderer>().material.SetTexture("_MainTex", vp.targetTexture);
+                    if(curMatIndex == 0)
+                    {
+                        mats[1].SetTexture("_MainTex", vp.targetTexture);
+                    }
+                    else
+                    {
+                        mats[0].SetTexture("_MainTex", vp.targetTexture);
+                    }
+                    //GetComponent<Renderer>().material.SetTexture("_MainTex", vp.targetTexture);
                 }
                 else
                 {
                     vp2.enabled = true;
                     vp2.isLooping = loop;
                     vp2.url = Path.GetFullPath(mediaName);
-                    vp2.Stop();
+                    
+                        vp2.Stop();
+                    
                     vp2.Play();
-                    GetComponent<Renderer>().material.SetTexture("_MainTex", vp2.targetTexture);
+                    if (curMatIndex == 0)
+                    {
+                        mats[1].SetTexture("_MainTex", vp2.targetTexture);
+                    }
+                    else
+                    {
+                        mats[0].SetTexture("_MainTex", vp2.targetTexture);
+                    }
+                    //GetComponent<Renderer>().material.SetTexture("_MainTex", vp2.targetTexture);
                 }
-                StartCoroutine(doFade(GetComponent<Renderer>(), userFadeTime));
+                //AdjustTextureAspect();
+                GetComponent<Renderer>().materials = mats;
+                //StartCoroutine(doFade(GetComponent<Renderer>(), userFadeTime));
             }
             else if (mediaName.EndsWith(".png") || mediaName.EndsWith(".jpg"))
             {
@@ -304,20 +288,38 @@ public class MediaArea : MonoBehaviour
                 texture.wrapMode = TextureWrapMode.Clamp;
                 texture.LoadImage(bytes);
 
-                TextureScale.Bilinear(texture, (int) texSize.x, (int) texSize.y);
+                //TextureScale.Bilinear(texture, (int) texSize.x, (int) texSize.y);
 
                 // our aspect ratio                
 
                 Renderer renderer = GetComponent<Renderer>();
 
-                moveTexToSecondary();
-                renderer.material.SetTexture("_MainTex", texture);
+                //moveTexToSecondary();
+
+                if (curMatIndex == 0)
+                {
+                    mats[1].SetTexture("_MainTex", texture);
+                }
+                else
+                {
+                    mats[0].SetTexture("_MainTex", texture);
+                }
+                //renderer.material.SetTexture("_MainTex", texture);
                 //AdjustTextureAspect();
-                StartCoroutine(doFade(renderer, userFadeTime));
+                //StartCoroutine(doFade(renderer, userFadeTime));
                 
                 //renderer.material.mainTexture = texture;
 
             }
+            if (curMatIndex == 0) {
+                AdjustTextureAspect(1);
+            }
+            else
+            {
+                AdjustTextureAspect(0);
+            }
+            StartCoroutine(doFade(GetComponent<Renderer>(), userFadeTime));
+
         }
 
         if (mediaName.Length != 0 && !vp.enabled || vp.isPlaying && vp.isPrepared || mediaName.Length != 0 && !vp2.enabled || vp2.isPlaying && vp2.isPrepared)
@@ -330,27 +332,37 @@ public class MediaArea : MonoBehaviour
         }
     }
 
-    private void AdjustBlackoutTex()
-    {
-        Texture t = GetComponent<Renderer>().material.GetTexture("_MainTex");
-        Texture2D b = new Texture2D(t.width, t.height);
-        for (int y = 0; y < b.height; y++)
-        {
-            for (int x = 0; x < b.width; x++)
-            {
-                Color color = Color.black;
-                b.SetPixel(x, y, color);
-            }
-        }
-        b.Apply();
-        blackout = b;
-    }
+    //private void AdjustBlackoutTex()
+    //{
+    //    Texture t = GetComponent<Renderer>().material.GetTexture("_MainTex");
+    //    Texture2D b = new Texture2D(t.width, t.height);
+    //    for (int y = 0; y < b.height; y++)
+    //    {
+    //        for (int x = 0; x < b.width; x++)
+    //        {
+    //            Color color = Color.black;
+    //            b.SetPixel(x, y, color);
+    //        }
+    //    }
+    //    b.Apply();
+    //    blackout = b;
+    //}
 
     public void fadeOut(float fadeTime)
     {
         //AdjustBlackoutTex();
-        moveTexToSecondary();
-        GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
+        //moveTexToSecondary();
+        mats = GetComponent<Renderer>().materials;
+        if (curMatIndex == 0)
+        {
+            mats[1].SetTexture("_MainTex", blackout);
+        }
+        else
+        {
+            mats[0].SetTexture("_MainTex", blackout);
+        }
+        GetComponent<Renderer>().materials = mats;
+        //GetComponent<Renderer>().material.SetTexture("_MainTex", blackout);
         StartCoroutine(doFade(GetComponent<Renderer>(), fadeTime));
     }
     
@@ -361,23 +373,45 @@ public class MediaArea : MonoBehaviour
         while (t < fadeTime)
         {
             t += Time.deltaTime;
-            float newBlend = Mathf.Lerp(1f, 0f, t / fadeTime);
-            renderer.material.SetFloat("_Blend", newBlend);
+            float newBlend = Mathf.Lerp(0f, 1f, t / fadeTime);
+            if(curMatIndex == 0)
+            {
+                renderer.materials[0].SetFloat("_Alpha", 1f - newBlend);
+                renderer.materials[1].SetFloat("_Alpha", newBlend);
+            }
+            else
+            {
+                renderer.materials[1].SetFloat("_Alpha", 1f - newBlend);
+                renderer.materials[0].SetFloat("_Alpha", newBlend);
+            }
+            
+            //renderer.material.SetFloat("_Blend", newBlend);
             yield return null;
         }
+
         
-        if (renderer.material.GetTexture("_SecondaryTex") == renderTex)
+
+        if (renderer.materials[curMatIndex].GetTexture("_MainTex") == renderTex)
         {
             vp.Stop();
             vp.enabled = false;
         }
-        if (renderer.material.GetTexture("_SecondaryTex") == renderTex2)
+        if (renderer.materials[curMatIndex].GetTexture("_MainTex") == renderTex2)
         {
             vp2.Stop();
             vp2.enabled = false;
         }
-        renderer.material.SetTexture("_SecondaryTex", blackout);
 
+        renderer.materials[curMatIndex].SetTexture("_MainTex", blackout);
+
+        if (curMatIndex == 0)
+        {
+            curMatIndex = 1;
+        }
+        else
+        {
+            curMatIndex = 0;
+        }
     }
     
     public void ApplyMeshUVs()
@@ -540,7 +574,7 @@ public class MediaArea : MonoBehaviour
 			
 			
             GetComponent<Renderer>().material.SetTexture("_MaskTex",maskTexture);
-            renderCamera.gameObject.active = false;
+            renderCamera.gameObject.SetActive(false);
             Destroy(renderCamera.gameObject);
         }
 
@@ -582,17 +616,17 @@ public class MediaArea : MonoBehaviour
     }
 }
 
-public static class TextureHelperClass
-{
-    public static Texture2D ChangeFormat(this Texture2D oldTexture, TextureFormat newFormat)
-    {
-        //Create new empty Texture
-        Texture2D newTex = new Texture2D(2, 2, newFormat, false);
-        //Copy old texture pixels into new one
-        newTex.SetPixels(oldTexture.GetPixels());
-        //Apply
-        newTex.Apply();
+//public static class TextureHelperClass
+//{
+//    public static Texture2D ChangeFormat(this Texture2D oldTexture, TextureFormat newFormat)
+//    {
+//        //Create new empty Texture
+//        Texture2D newTex = new Texture2D(2, 2, newFormat, false);
+//        //Copy old texture pixels into new one
+//        newTex.SetPixels(oldTexture.GetPixels());
+//        //Apply
+//        newTex.Apply();
 
-        return newTex;
-    }
-}
+//        return newTex;
+//    }
+//}
