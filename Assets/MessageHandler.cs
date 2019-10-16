@@ -165,7 +165,7 @@ public class MessageHandler : MonoBehaviour
     
     public void OnMediaUpdate( string targetName,OscMessage oscM)
     {
-        bool stretch=false;
+        bool stretch=true;
         bool expand=true;
         bool loop=false;
         float? edgeBlur = null;

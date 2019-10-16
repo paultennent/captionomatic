@@ -55,6 +55,10 @@ public class MediaArea : MonoBehaviour
     private Material[] mats;
     private int curMatIndex = 0;
 
+    public bool debug = false;
+    private bool fading = false;
+    private bool killFade = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -112,6 +116,11 @@ public class MediaArea : MonoBehaviour
         mats[0].SetFloat("_Alpha", 1f);
         mats[1].SetFloat("_Alpha", 0f);
         GetComponent<Renderer>().materials = mats;
+
+        if (debug)
+        {
+            Debug.Log("Setup Complete - curMatindex = " + curMatIndex);
+        }
 
     }
 
@@ -225,6 +234,10 @@ public class MediaArea : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (debug)
+        {
+            //Debug.Log("curMatIndex: " + curMatIndex);
+        }
         mats = GetComponent<Renderer>().materials;
         if (lastEdgeBlur != edgeBlur)
         {
@@ -233,10 +246,17 @@ public class MediaArea : MonoBehaviour
         //AdjustTextureAspect();
         if (oldMediaName != mediaName)
         {
+            if (debug)
+            {
+                Debug.Log("Changing Media to " + mediaName);
+            }
             oldMediaName = mediaName;
             if (mediaName.EndsWith(".mp4"))
             {
-                //moveTexToSecondary();
+                if (debug)
+                {
+                    Debug.Log("It's a video");
+                }
                 if (!vp.enabled)
                 {
                     vp.enabled = true;
@@ -281,7 +301,18 @@ public class MediaArea : MonoBehaviour
             }
             else if (mediaName.EndsWith(".png") || mediaName.EndsWith(".jpg"))
             {
-               
+                if (debug)
+                {
+                    Debug.Log("It's an image");
+                }
+
+                //check if we're already fading - if so, complet the fade
+                if (fading)
+                {
+                    killFade = true;
+                    completeFade(GetComponent<Renderer>());
+                }
+
                 byte[] bytes = File.ReadAllBytes(mediaName);
                 Texture2D texture = new Texture2D(2, 2);
                 texture.filterMode = FilterMode.Point;
@@ -295,7 +326,10 @@ public class MediaArea : MonoBehaviour
                 Renderer renderer = GetComponent<Renderer>();
 
                 //moveTexToSecondary();
-
+                if (debug)
+                {
+                    Debug.Log("seting texture of material");
+                }
                 if (curMatIndex == 0)
                 {
                     mats[1].SetTexture("_MainTex", texture);
@@ -311,6 +345,10 @@ public class MediaArea : MonoBehaviour
                 //renderer.material.mainTexture = texture;
 
             }
+            if (debug)
+            {
+                Debug.Log("adjusting aspect ratio");
+            }
             if (curMatIndex == 0) {
                 AdjustTextureAspect(1);
             }
@@ -318,6 +356,7 @@ public class MediaArea : MonoBehaviour
             {
                 AdjustTextureAspect(0);
             }
+
             StartCoroutine(doFade(GetComponent<Renderer>(), userFadeTime));
 
         }
@@ -350,6 +389,10 @@ public class MediaArea : MonoBehaviour
 
     public void fadeOut(float fadeTime)
     {
+        if (debug)
+        {
+            Debug.Log("calling fadeout");
+        }
         //AdjustBlackoutTex();
         //moveTexToSecondary();
         mats = GetComponent<Renderer>().materials;
@@ -368,28 +411,75 @@ public class MediaArea : MonoBehaviour
     
     public IEnumerator doFade(Renderer renderer, float fadeTime)
     {
-        
+        //if we're already fading, end the current fade before starting again
+        if (killFade)
+        {
+            while (killFade)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        fading = true;
+        killFade = false;
+        if (debug)
+        {
+            Debug.Log("calling fade");
+        }
         float t = 0;
         while (t < fadeTime)
         {
+            if (killFade)
+            {
+                killFade = false;
+                yield break;
+            }
             t += Time.deltaTime;
             float newBlend = Mathf.Lerp(0f, 1f, t / fadeTime);
             if(curMatIndex == 0)
             {
-                renderer.materials[0].SetFloat("_Alpha", 1f - newBlend);
-                renderer.materials[1].SetFloat("_Alpha", newBlend);
+                Material[] mats = renderer.materials;
+                mats[0].SetFloat("_Alpha", 1f - newBlend);
+                mats[1].SetFloat("_Alpha", newBlend);
+                renderer.materials = mats;
             }
             else
             {
-                renderer.materials[1].SetFloat("_Alpha", 1f - newBlend);
-                renderer.materials[0].SetFloat("_Alpha", newBlend);
+                Material[] mats = renderer.materials;
+                mats[1].SetFloat("_Alpha", 1f - newBlend);
+                mats[0].SetFloat("_Alpha", newBlend);
+                renderer.materials = mats;
             }
             
             //renderer.material.SetFloat("_Blend", newBlend);
             yield return null;
         }
 
+        if (debug)
+        {
+            Debug.Log("finished timed fade");
+        }
+
+        completeFade(renderer);
         
+        
+    }
+
+    public void completeFade(Renderer renderer)
+    {
+        if (curMatIndex == 1)
+        {
+            Material[] mats = renderer.materials;
+            mats[0].SetFloat("_Alpha", 1f);
+            mats[1].SetFloat("_Alpha", 0f);
+            renderer.materials = mats;
+        }
+        else
+        {
+            Material[] mats = renderer.materials;
+            mats[1].SetFloat("_Alpha", 1f);
+            mats[0].SetFloat("_Alpha", 0f);
+            renderer.materials = mats;
+        }
 
         if (renderer.materials[curMatIndex].GetTexture("_MainTex") == renderTex)
         {
@@ -402,8 +492,16 @@ public class MediaArea : MonoBehaviour
             vp2.enabled = false;
         }
 
+        if (debug)
+        {
+            Debug.Log("settying curtex to blackout");
+        }
         renderer.materials[curMatIndex].SetTexture("_MainTex", blackout);
 
+        if (debug)
+        {
+            Debug.Log("switching curtex");
+        }
         if (curMatIndex == 0)
         {
             curMatIndex = 1;
@@ -412,6 +510,9 @@ public class MediaArea : MonoBehaviour
         {
             curMatIndex = 0;
         }
+        fading = false;
+        
+        
     }
     
     public void ApplyMeshUVs()
