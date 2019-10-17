@@ -484,11 +484,21 @@ public class MediaArea : MonoBehaviour
         if (renderer.materials[curMatIndex].GetTexture("_MainTex") == renderTex)
         {
             vp.Stop();
+            // need to fill the render texture with black here to prevent flashing up the final frame
+            RenderTexture.active = renderTex;
+            GL.Clear(true, true, Color.black);
+            RenderTexture.active = null;
+            vp.clip = null;
             vp.enabled = false;
         }
         if (renderer.materials[curMatIndex].GetTexture("_MainTex") == renderTex2)
         {
             vp2.Stop();
+            // need to fill the render texture with black here to prevent flashing up the final frame
+            RenderTexture.active = renderTex2;
+            GL.Clear(true, true, Color.black);
+            RenderTexture.active = null;
+            vp.clip = null;
             vp2.enabled = false;
         }
 
